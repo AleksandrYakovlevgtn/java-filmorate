@@ -5,7 +5,6 @@ import org.junit.jupiter.api.Test;
 import ru.yandex.practicum.filmorate.controller.FilmController;
 import ru.yandex.practicum.filmorate.model.Film;
 
-import java.time.Duration;
 import java.time.LocalDate;
 import java.util.Set;
 import javax.validation.ConstraintViolation;
@@ -29,7 +28,7 @@ class FilmControllerTest {
                 .name("filmName")
                 .description("description")
                 .releaseDate(LocalDate.now())
-                .duration(Duration.ofMinutes(60))
+                .duration(60)
                 .build();
         ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
         val = factory.getValidator();
@@ -48,7 +47,7 @@ class FilmControllerTest {
                 .name("")
                 .description("description")
                 .releaseDate(LocalDate.now())
-                .duration(Duration.ofMinutes(60))
+                .duration(60)
                 .build();
         Set<ConstraintViolation<Film>> violations = val.validate(film1);
         assertFalse(violations.isEmpty());
@@ -61,7 +60,7 @@ class FilmControllerTest {
                 .name("name")
                 .description("qwertyuiop")
                 .releaseDate(LocalDate.now())
-                .duration(Duration.ofMinutes(60))
+                .duration(60)
                 .build();
         for (int i = 0; i < 6; i++) {
             film1.setDescription(film1.getDescription() + film1.getDescription());
@@ -77,7 +76,7 @@ class FilmControllerTest {
                 .name("name")
                 .description("description")
                 .releaseDate(LocalDate.of(1000, 1, 1))
-                .duration(Duration.ofMinutes(60))
+                .duration(60)
                 .build();
         Set<ConstraintViolation<Film>> violations = val.validate(film1);
         assertFalse(violations.isEmpty());
@@ -90,7 +89,7 @@ class FilmControllerTest {
                 .name("name")
                 .description("description")
                 .releaseDate(LocalDate.now())
-                .duration(Duration.ofMinutes(-1))
+                .duration(-1)
                 .build();
         Set<ConstraintViolation<Film>> violations = val.validate(film1);
         assertFalse(violations.isEmpty());

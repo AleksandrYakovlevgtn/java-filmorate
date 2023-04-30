@@ -7,7 +7,6 @@ import ru.yandex.practicum.filmorate.validation.RealiseDate;
 
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
-import java.time.Duration;
 import java.time.LocalDate;
 
 @Data
@@ -21,5 +20,5 @@ public class Film {
     @RealiseDate(message = "дата релиза — не раньше 28 декабря 1895 года")
     LocalDate releaseDate;
     @Min(value = 0, message = "продолжительность фильма должна быть положительной.")
-    Duration duration;
+    Integer duration;
 }
