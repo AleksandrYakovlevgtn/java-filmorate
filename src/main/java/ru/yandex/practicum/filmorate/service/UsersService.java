@@ -15,7 +15,6 @@ public class UsersService {
     public void create(User user) {
         if (date.haveUser(user)) {
             System.out.println("Пользователь уже существует!");
-
         }
         date.setUser(User.builder()
                 .id(user.getId())

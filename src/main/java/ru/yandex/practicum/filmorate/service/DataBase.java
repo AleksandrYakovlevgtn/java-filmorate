@@ -18,39 +18,13 @@ public class DataBase {
     }
 
     public Film setFilm(Film film) {
-        Film work = film;
-        if (film.getId() == 0) {
-            int workID = setId();
-            work = Film.builder()
-                    .id(workID)
-                    .description(film.getDescription())
-                    .duration(film.getDuration())
-                    .name(film.getName())
-                    .releaseDate(film.getReleaseDate())
-                    .build();
-            filmBase.put(workID, work);
-        } else {
-            filmBase.put(film.getId(), film);
-        }
-        return work;
+        filmBase.put(film.getId(), film);
+        return film;
     }
 
     public User setUser(User user) {
-        User work = user;
-        if (user.getId() == 0) {
-            int workID = setId();
-            work = User.builder()
-                    .id(workID)
-                    .name(user.getName())
-                    .email(user.getEmail())
-                    .login(user.getLogin())
-                    .birthday(user.getBirthday())
-                    .build();
-            userBase.put(workID, work);
-        } else {
-            userBase.put(user.getId(), user);
-        }
-        return work;
+        userBase.put(user.getId(), user);
+        return user;
     }
 
     public boolean haveFilmOrUser(Object someThing) {
