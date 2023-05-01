@@ -1,5 +1,6 @@
 package ru.yandex.practicum.filmorate;
 
+import lombok.SneakyThrows;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import ru.yandex.practicum.filmorate.controller.UserController;
@@ -34,6 +35,7 @@ class UserControllerTest {
         val = factory.getValidator();
     }
 
+    @SneakyThrows
     @Test
     void shouldCreateUserWhenAllOk() {
         userController.createUser(user);
@@ -86,7 +88,7 @@ class UserControllerTest {
                 .name("name")
                 .email("net@net.com")
                 .login("net")
-                .birthday(LocalDate.of(2088, 4, 7))
+                .birthday(LocalDate.of(1988, 4, 7))
                 .build();
         Set<ConstraintViolation<User>> violations = val.validate(user1);
         assertFalse(violations.isEmpty());

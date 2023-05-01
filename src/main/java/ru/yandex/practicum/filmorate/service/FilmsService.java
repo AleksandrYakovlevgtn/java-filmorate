@@ -12,7 +12,7 @@ public class FilmsService {
     private DataBase date = new DataBase();
 
     public Film create(Film film) throws Exception {
-        if (date.haveFilmOrUser(film)) {
+        if (date.haveFilm(film)) {
             throw new Exception("Фильм уже существует!");
         }
         return date.setFilm(Film.builder()

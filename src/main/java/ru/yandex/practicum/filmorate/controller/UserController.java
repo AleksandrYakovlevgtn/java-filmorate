@@ -17,9 +17,8 @@ public class UserController {
     @Autowired
     private UsersService usersService = new UsersService();
 
-    @SneakyThrows
     @PostMapping
-    public User createUser(@RequestBody @Valid User user) {
+    public User createUser(@Valid @RequestBody User user) throws Exception {
         return usersService.create(user);
     }
 
