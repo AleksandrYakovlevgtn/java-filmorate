@@ -32,6 +32,7 @@ public class UsersService {
             throw new Exception("Обновить не удалось, пользователь не существует");
         }
         return date.setUser(User.builder()
+                .id(user.getId())
                 .name(user.getName())
                 .email(user.getEmail())
                 .login(user.getLogin())
