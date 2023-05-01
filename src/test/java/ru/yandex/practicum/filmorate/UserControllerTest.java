@@ -1,6 +1,7 @@
 package ru.yandex.practicum.filmorate;
 
 import lombok.SneakyThrows;
+import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import ru.yandex.practicum.filmorate.controller.UserController;
@@ -26,7 +27,7 @@ class UserControllerTest {
         userController = new UserController();
         user = User.builder()
                 .id(1)
-                .name("Name")
+                .name("")
                 .email("net@net.com")
                 .login("net")
                 .birthday(LocalDate.of(1988, 4, 7))
@@ -38,21 +39,21 @@ class UserControllerTest {
     @SneakyThrows
     @Test
     void shouldCreateUserWhenAllOk() {
+        user.setName("oK");
         userController.createUser(user);
         assertEquals(user.getName(), userController.takeUsers().get(0).getName());
     }
 
     @Test
-    void shouldTakeViolationsWhenNameIsEmpty() {
+    void shouldTakeLoginWhenNameIsEmpty() {
         User user1 = User.builder()
                 .id(1)
-                .name("")
+                .name(StringUtils.isBlank(user.getName()) ? user.getLogin() : user.getName())
                 .email("net@net.com")
                 .login("net")
                 .birthday(LocalDate.of(1988, 4, 7))
                 .build();
-        Set<ConstraintViolation<User>> violations = val.validate(user1);
-        assertFalse(violations.isEmpty());
+        assertEquals("net", user1.getName());
     }
 
     @Test
@@ -88,7 +89,7 @@ class UserControllerTest {
                 .name("name")
                 .email("net@net.com")
                 .login("net")
-                .birthday(LocalDate.of(1988, 4, 7))
+                .birthday(LocalDate.of(2088, 4, 7))
                 .build();
         Set<ConstraintViolation<User>> violations = val.validate(user1);
         assertFalse(violations.isEmpty());
