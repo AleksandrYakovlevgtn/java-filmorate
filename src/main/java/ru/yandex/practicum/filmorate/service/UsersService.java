@@ -13,10 +13,10 @@ public class UsersService {
     @Autowired
     private DataBase date = new DataBase();
 
-    public User create(User user) throws Exception {
+    public User create(User user)  {
         if (date.haveUser(user)) {
-            throw new Exception("Пользователь уже существует!");
-
+            System.out.println("Пользователь уже существует!");
+            return user;
         }
         return date.setUser(User.builder()
                 .id(user.getId())
@@ -27,9 +27,10 @@ public class UsersService {
                 .build());
     }
 
-    public User update(User user) throws Exception {
+    public User update(User user) {
         if (!date.haveFilmOrUser(user)) {
-            throw new Exception("Обновить не удалось, пользователь не существует");
+            System.out.println("Обновить не удалось, пользователь не существует");
+            return user;
         }
         return date.setUser(User.builder()
                 .id(user.getId())

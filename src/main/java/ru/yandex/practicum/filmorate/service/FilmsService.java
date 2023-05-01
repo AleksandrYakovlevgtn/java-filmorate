@@ -11,11 +11,13 @@ public class FilmsService {
     @Autowired
     private DataBase date = new DataBase();
 
-    public Film create(Film film) throws Exception {
+    public Film create(Film film)  {
         if (date.haveFilm(film)) {
-            throw new Exception("Фильм уже существует!");
+            System.out.println("Фильм уже существует!");
+            return film;
         }
         return date.setFilm(Film.builder()
+                .id(film.getId())
                 .name(film.getName())
                 .description(film.getDescription())
                 .releaseDate(film.getReleaseDate())
@@ -25,9 +27,11 @@ public class FilmsService {
 
     public Film update(Film film) throws Exception {
         if (!date.haveFilmOrUser(film)) {
-            throw new Exception("Обновить не удалось, фильма не существует");
+            System.out.println("Обновить не удалось, фильма не существует");
+            return film;
         }
         return date.setFilm(Film.builder()
+                .id(film.getId())
                 .name(film.getName())
                 .description(film.getDescription())
                 .releaseDate(film.getReleaseDate())
