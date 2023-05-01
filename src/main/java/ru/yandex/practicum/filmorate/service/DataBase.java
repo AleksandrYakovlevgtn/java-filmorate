@@ -74,10 +74,11 @@ public class DataBase {
         return work;
     }
 
-    public boolean haveUser (User user){
+    public boolean haveUser(User user) {
         return userBase.containsKey(user.getId());
     }
-    public boolean haveFilm (Film film){
+
+    public boolean haveFilm(Film film) {
         return filmBase.containsKey(film.getId());
     }
 }
