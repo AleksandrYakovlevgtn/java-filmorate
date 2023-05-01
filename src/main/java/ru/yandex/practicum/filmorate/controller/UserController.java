@@ -18,14 +18,16 @@ public class UserController {
     private UsersService usersService = new UsersService();
 
     @PostMapping
-    public void createUser(@Valid @RequestBody User user) throws Exception {
+    public User createUser(@Valid @RequestBody User user) throws Exception {
         usersService.create(user);
+        return user;
     }
 
     @SneakyThrows
     @PutMapping
-    public void updateUser(@RequestBody @Valid User user) {
+    public User updateUser(@RequestBody @Valid User user) {
         usersService.update(user);
+        return user;
     }
 
     @GetMapping

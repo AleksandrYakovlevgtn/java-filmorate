@@ -27,9 +27,10 @@ public class UsersService {
     }
 
     public void update(User user) {
-        if (!date.haveFilmOrUser(user)) {
+        if (date.haveFilmOrUser(user)) {
             System.out.println("Обновить не удалось, пользователь не существует");
-        } else {
+        }
+        if (!date.haveFilmOrUser(user)) {
             date.setUser(User.builder()
                     .id(user.getId())
                     .name(user.getName())
