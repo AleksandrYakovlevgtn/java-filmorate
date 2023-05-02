@@ -17,7 +17,8 @@ public class DataBase {
         userid++;
         return userid;
     }
-    public int setFilmId(){
+
+    public int setFilmId() {
         filmId++;
         return filmId;
     }
