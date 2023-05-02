@@ -18,11 +18,21 @@ public class DataBase {
     }
 
     public Film setFilm(Film film) {
+        Integer id = film.getId();
+        if (id == null || id == 0) {
+            id = setId();
+            film.setId(id);
+        }
         filmBase.put(film.getId(), film);
         return film;
     }
 
     public User setUser(User user) {
+        Integer id = user.getId();
+        if (id == null || id == 0) {
+            id = setId();
+            user.setId(id);
+        }
         userBase.put(user.getId(), user);
         return user;
     }

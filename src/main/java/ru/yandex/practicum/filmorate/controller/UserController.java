@@ -19,15 +19,15 @@ public class UserController {
 
     @PostMapping
     public User createUser(@Valid @RequestBody User user) throws Exception {
-        usersService.create(user);
-        return user;
+        User user2 = usersService.create(user);
+        return user2;
     }
 
     @SneakyThrows
     @PutMapping
     public User updateUser(@RequestBody @Valid User user) {
-        usersService.update(user);
-        return user;
+        User user2 = usersService.update(user);
+        return user2;
     }
 
     @GetMapping

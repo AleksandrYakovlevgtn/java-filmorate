@@ -11,7 +11,7 @@ public class FilmsService {
     @Autowired
     private DataBase date = new DataBase();
 
-    public Film create(Film film)  {
+    public Film create(Film film) {
         if (date.haveFilm(film)) {
             System.out.println("Фильм уже существует!");
             return film;
@@ -26,9 +26,8 @@ public class FilmsService {
     }
 
     public Film update(Film film) throws Exception {
-        if (!date.haveFilmOrUser(film)) {
-            System.out.println("Обновить не удалось, фильма не существует");
-            return film;
+        if (date.haveFilmOrUser(film)) {
+            throw new Exception("Обновить не удалось, фильма не существует");
         }
         return date.setFilm(Film.builder()
                 .id(film.getId())

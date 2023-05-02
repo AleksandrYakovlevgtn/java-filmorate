@@ -12,25 +12,29 @@ public class UsersService {
     @Autowired
     private DataBase date = new DataBase();
 
-    public void create(User user) {
+    public User create(User user) {
         if (date.haveUser(user)) {
             System.out.println("Пользователь уже существует!");
+            return user;
         }
-        date.setUser(User.builder()
+        User user2 = User.builder()
                 .id(user.getId())
                 .name(StringUtils.isBlank(user.getName()) ? user.getLogin() : user.getName())
                 .email(user.getEmail())
                 .login(user.getLogin())
                 .birthday(user.getBirthday())
-                .build());
+                .build();
+        date.setUser(user2);
+        return user2;
     }
 
-    public void update(User user) {
+    public User update(User user) throws Exception {
+        User user2 = null;
         if (date.haveFilmOrUser(user)) {
-            System.out.println("Обновить не удалось, пользователь не существует");
+            throw new Exception("Обновить не удалось, пользователь не существует");
         }
         if (!date.haveFilmOrUser(user)) {
-            date.setUser(User.builder()
+            user2 = date.setUser(User.builder()
                     .id(user.getId())
                     .name(user.getName())
                     .email(user.getEmail())
@@ -38,6 +42,7 @@ public class UsersService {
                     .birthday(user.getBirthday())
                     .build());
         }
+        return user2;
     }
 
     public List<User> takeAll() {
