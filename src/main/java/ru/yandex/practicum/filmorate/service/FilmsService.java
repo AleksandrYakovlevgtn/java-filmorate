@@ -16,13 +16,15 @@ public class FilmsService {
             System.out.println("Фильм уже существует!");
             return film;
         }
-        return date.setFilm(Film.builder()
+        Film film2 = Film.builder()
                 .id(film.getId())
                 .name(film.getName())
                 .description(film.getDescription())
                 .releaseDate(film.getReleaseDate())
                 .duration(film.getDuration())
-                .build());
+                .build();
+        date.setFilm(film2);
+        return film2;
     }
 
     public Film update(Film film) throws Exception {

@@ -10,17 +10,22 @@ import java.util.*;
 public class DataBase {
     public HashMap<Integer, Film> filmBase = new HashMap<>();
     public HashMap<Integer, User> userBase = new HashMap<>();
-    protected int id = 0;
+    protected int userid = 0;
+    protected int filmId = 0;
 
-    public int setId() {
-        id++;
-        return id;
+    public int setUserId() {
+        userid++;
+        return userid;
+    }
+    public int setFilmId(){
+        filmId++;
+        return filmId;
     }
 
     public Film setFilm(Film film) {
         Integer id = film.getId();
         if (id == null || id == 0) {
-            id = setId();
+            id = setFilmId();
             film.setId(id);
         }
         filmBase.put(film.getId(), film);
@@ -30,7 +35,7 @@ public class DataBase {
     public User setUser(User user) {
         Integer id = user.getId();
         if (id == null || id == 0) {
-            id = setId();
+            id = setUserId();
             user.setId(id);
         }
         userBase.put(user.getId(), user);
