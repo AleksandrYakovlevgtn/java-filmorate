@@ -4,6 +4,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import ru.yandex.practicum.filmorate.controller.FilmController;
 import ru.yandex.practicum.filmorate.model.Film;
+import ru.yandex.practicum.filmorate.service.FilmStorageInMemory;
+import ru.yandex.practicum.filmorate.service.FilmsService;
 
 import java.time.LocalDate;
 import java.util.Set;
@@ -17,12 +19,13 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 
 class FilmControllerTest {
     private Film film;
-    private FilmController filmController;
+    protected FilmStorageInMemory filmStorageInMemory = new FilmStorageInMemory();
+    protected FilmsService filmsService = new FilmsService(filmStorageInMemory);
+    private FilmController filmController = new FilmController(filmsService);
     private Validator val;
 
     @BeforeEach
     void beforeEach() {
-        filmController = new FilmController();
         film = Film.builder()
                 .id(1)
                 .name("filmName")

@@ -2,6 +2,8 @@ package ru.yandex.practicum.filmorate.controller;
 
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.service.FilmsService;
@@ -12,8 +14,14 @@ import java.util.List;
 @Slf4j
 @RequestMapping("/films")
 @RestController
+@Component
 public class FilmController {
-    private FilmsService filmsService = new FilmsService();
+    private final FilmsService filmsService;
+
+    @Autowired
+    public FilmController(FilmsService filmsService) {
+        this.filmsService = filmsService;
+    }
 
     @SneakyThrows
     @PostMapping
@@ -23,7 +31,7 @@ public class FilmController {
 
     @SneakyThrows
     @PutMapping
-    public Film updeteFilm(@RequestBody @Valid Film film) {
+    public Film updateFilm(@RequestBody @Valid Film film) {
         return filmsService.update(film);
     }
 

@@ -6,6 +6,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import ru.yandex.practicum.filmorate.controller.UserController;
 import ru.yandex.practicum.filmorate.model.User;
+import ru.yandex.practicum.filmorate.service.UserStorageInMemory;
+import ru.yandex.practicum.filmorate.service.UsersService;
 
 import java.time.LocalDate;
 import java.util.Set;
@@ -17,14 +19,18 @@ import javax.validation.ValidatorFactory;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 
+
 class UserControllerTest {
     private User user;
-    private UserController userController;
+    protected UserStorageInMemory userStorageInMemory = new UserStorageInMemory();
+
+    protected UsersService usersService = new UsersService(userStorageInMemory);
+    private UserController userController = new UserController(usersService);
     private Validator val;
+
 
     @BeforeEach
     void beforeEach() {
-        userController = new UserController();
         user = User.builder()
                 .id(1)
                 .name("")

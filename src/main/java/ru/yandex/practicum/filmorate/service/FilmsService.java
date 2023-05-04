@@ -1,6 +1,8 @@
 package ru.yandex.practicum.filmorate.service;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import ru.yandex.practicum.filmorate.exceptions.ExceptionsUpdate;
 import ru.yandex.practicum.filmorate.model.Film;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -11,7 +13,12 @@ import java.util.*;
 public class FilmsService implements InterfaceService<Film> {
     private static final Logger log = LoggerFactory.getLogger(FilmsService.class);
 
-    private FilmStorageInMemory date = new FilmStorageInMemory();
+    private final FilmStorageInMemory date;
+
+    @Autowired
+    public FilmsService(FilmStorageInMemory date) {
+        this.date = date;
+    }
 
     public Film create(Film film) {
         if (date.haveFilm(film)) {
@@ -19,27 +26,15 @@ public class FilmsService implements InterfaceService<Film> {
             return film;
         }
         log.info("Фильм создан!");
-        return date.setFilm(Film.builder()
-                .id(film.getId())
-                .name(film.getName())
-                .description(film.getDescription())
-                .releaseDate(film.getReleaseDate())
-                .duration(film.getDuration())
-                .build());
+        return date.setFilm(film);
     }
 
     public Film update(Film film) throws Exception {
         if (date.haveFilmByName(film)) {
-            throw new Exception("Обновить не удалось, фильма не существует");
+            throw new ExceptionsUpdate("Обновить не удалось, фильма не существует");
         }
         log.info("Фильм обновлен!");
-        return date.setFilm(Film.builder()
-                .id(film.getId())
-                .name(film.getName())
-                .description(film.getDescription())
-                .releaseDate(film.getReleaseDate())
-                .duration(film.getDuration())
-                .build());
+        return date.updateFilm(film);
     }
 
     public List<Film> takeAll() {
