@@ -14,6 +14,8 @@ public interface UserStorage {
     User delete(int id);
 
     User takeById(Integer id);
+
     boolean haveUserByEmail(User user);
+
     boolean haveUser(Integer id);
 }
