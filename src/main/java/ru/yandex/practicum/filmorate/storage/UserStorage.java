@@ -11,8 +11,6 @@ public interface UserStorage {
 
     User update(User user);
 
-    User delete(int id);
-
     User takeById(Integer id);
 
     boolean haveUserByEmail(User user);

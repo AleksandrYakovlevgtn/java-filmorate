@@ -36,12 +36,6 @@ public class InMemoryFilmStorage implements FilmStorage {
         return film;
     }
 
-    public Film delete(int id) {
-        Film film = filmBase.get(id);
-        filmBase.remove(id);
-        return film;
-    }
-
     public Collection<Film> takeAll() {
         return new ArrayList<>(filmBase.values());
     }

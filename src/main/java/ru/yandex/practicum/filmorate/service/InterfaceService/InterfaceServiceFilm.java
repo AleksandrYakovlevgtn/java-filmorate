@@ -1,17 +1,19 @@
 package ru.yandex.practicum.filmorate.service.InterfaceService;
 
+import ru.yandex.practicum.filmorate.model.Film;
+
 import java.util.List;
 
-public interface InterfaceServiceFilm<T> {
-    T create(T t);
+public interface InterfaceServiceFilm {
+    Film create(Film film);
 
-    T update(T t) throws Exception;
+    Film update(Film film) throws Exception;
 
     List takeAll();
 
     List takePopular(Integer count);
 
-    T takeById(Integer id);
+    Film takeById(Integer id);
 
     void addLike(Integer id, Integer id2);
 

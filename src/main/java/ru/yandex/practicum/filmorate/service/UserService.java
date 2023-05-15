@@ -3,7 +3,6 @@ package ru.yandex.practicum.filmorate.service;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.exceptions.ExceptionsUpdate;
 import ru.yandex.practicum.filmorate.model.User;
@@ -12,9 +11,8 @@ import ru.yandex.practicum.filmorate.storage.InMemoryUserStorage;
 
 import java.util.*;
 
-@Component
 @Service
-public class UserService implements InterfaceServiceUser<User> {
+public class UserService implements InterfaceServiceUser {
     private final InMemoryUserStorage dateUser;
     private static final Logger log = LoggerFactory.getLogger(UserService.class);
 
@@ -25,7 +23,7 @@ public class UserService implements InterfaceServiceUser<User> {
 
     public User create(User user) {
         if (dateUser.haveUser(user.getId())) {
-            log.info("Пользователь уже существует!");
+            log.error("Пользователь уже существует!");
             return user;
         }
         log.info("Пользователь создан!");

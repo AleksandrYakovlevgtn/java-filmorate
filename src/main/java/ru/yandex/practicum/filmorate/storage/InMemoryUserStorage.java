@@ -44,12 +44,6 @@ public class InMemoryUserStorage implements UserStorage {
         return user;
     }
 
-    public User delete(int id) {
-        User user = userBase.get(id);
-        userBase.remove(id);
-        return user;
-    }
-
     public Collection<User> takeAll() {
         return new ArrayList<>(userBase.values());
     }

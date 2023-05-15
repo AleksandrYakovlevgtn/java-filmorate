@@ -30,7 +30,7 @@ public class Film {
 
     private final Set<Integer> likes = new HashSet<>();
 
-    public void addLikes(Integer id) {
+    public void addLike(Integer id) {
         likes.add(id);
     }
 }

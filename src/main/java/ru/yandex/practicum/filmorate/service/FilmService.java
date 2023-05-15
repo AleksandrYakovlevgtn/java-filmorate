@@ -16,7 +16,7 @@ import java.util.stream.Collectors;
 
 @Component
 @Service
-public class FilmService implements InterfaceServiceFilm<Film> {
+public class FilmService implements InterfaceServiceFilm {
     private static final Logger log = LoggerFactory.getLogger(FilmService.class);
 
     private final InMemoryFilmStorage dateFilm;
@@ -30,17 +30,11 @@ public class FilmService implements InterfaceServiceFilm<Film> {
 
     public Film create(Film film) {
         if (dateFilm.haveFilm(film.getId())) {
-            log.info("Фильм уже существует!");
+            log.error("Фильм уже существует!");
             return film;
         }
-        Film film1 = Film.builder()
-                .name(film.getName())
-                .description(film.getDescription())
-                .releaseDate(film.getReleaseDate())
-                .duration(film.getDuration())
-                .build();
         log.info("Фильм создан!");
-        return dateFilm.create(film1);
+        return dateFilm.create(film);
     }
 
     public Film update(Film film) {
@@ -56,16 +50,15 @@ public class FilmService implements InterfaceServiceFilm<Film> {
     }
 
     public List<Film> takePopular(Integer count) {
-        Integer size = Objects.requireNonNullElse(count, 10);
         log.info("Получен список популярных фильмов");
         return dateFilm.takeAll().stream()
-                .sorted(Comparator.comparing(film ->  -film.getLikes().size())).limit(size)
+                .sorted(Comparator.comparing(film -> -film.getLikes().size())).limit(count)
                 .collect(Collectors.toList());
     }
 
     public Film takeById(Integer id) {
         if (!dateFilm.haveFilm(id)) {
-            log.info("Фильм не существует!");
+            log.error("Фильм не существует!");
             throw new ExceptionsUpdate("Пользователь не существует!");
         }
         log.info("Получен фильм по id");
@@ -78,7 +71,7 @@ public class FilmService implements InterfaceServiceFilm<Film> {
             log.info("Поставлен like фильму " + dateFilm.takeById(id).getName());
             dateFilm.update(dateFilm.takeById(id));
         } else {
-            log.info("При попытке поставить like произошла ошибка, пользователь или фильм не найден.");
+            log.error("При попытке поставить like произошла ошибка, пользователь или фильм не найден.");
             throw new ExceptionsUpdate("При попытке поставить like произошла ошибка, пользователь или фильм не найден.");
         }
     }
@@ -89,7 +82,7 @@ public class FilmService implements InterfaceServiceFilm<Film> {
             log.info("Удален like фильму " + dateFilm.takeById(id).getName());
             dateFilm.update(dateFilm.takeById(id));
         } else {
-            log.info("При попытке удалить like произошла ошибка, пользователь или фильм не найден.");
+            log.error("При попытке удалить like произошла ошибка, пользователь или фильм не найден.");
             throw new ExceptionsUpdate("При попытке удалить like произошла ошибка, пользователь или фильм не найден.");
         }
     }

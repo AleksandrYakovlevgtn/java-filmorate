@@ -4,7 +4,6 @@ import lombok.Getter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -20,20 +19,15 @@ public class ErrorHandler {
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ResponseEntity<?> handlerBadRequestException(final ExceptionValidate o) {
-        String error = "400 BAD_REQUEST.";
-        String message = o.getMessage();
-        log.error(error + " " + message);
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error + " " + message);
+    public Map<String, String> handlerBadRequestException(final ExceptionValidate o) {
+        log.error(o.getMessage());
+        return Map.of("error", "BAD_REQUEST");
     }
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public Map<String, String> handlerNotFoundException(final ExceptionsUpdate o) {
-        /*String error = "404 NOT_FOUND.";
-        String message = o.getMessage();
-        log.error(error + " " + message);
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error + " " + message);*/
-        return Map.of("error","Обект на найден");
+        log.error(o.getMessage());
+        return Map.of("error", "Объект не найден");
     }
 }
