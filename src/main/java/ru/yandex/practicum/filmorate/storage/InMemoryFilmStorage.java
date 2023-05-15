@@ -1,13 +1,15 @@
-package ru.yandex.practicum.filmorate.service;
+package ru.yandex.practicum.filmorate.storage;
 
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.model.Film;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
 @Component
-public class FilmStorageInMemory {
+public class InMemoryFilmStorage implements FilmStorage {
     private HashMap<Integer, Film> filmBase = new HashMap<>();
     protected int filmId = 0;
 
@@ -19,7 +21,7 @@ public class FilmStorageInMemory {
         return filmBase;
     }
 
-    public Film setFilm(Film film) {
+    public Film create(Film film) {
         Integer id = film.getId();
         if (id == null || id == 0) {
             id = setFilmId();
@@ -29,9 +31,23 @@ public class FilmStorageInMemory {
         return film;
     }
 
-    public Film updateFilm(Film film) {
+    public Film update(Film film) {
         filmBase.put(film.getId(), film);
         return film;
+    }
+
+    public Film delete(int id) {
+        Film film = filmBase.get(id);
+        filmBase.remove(id);
+        return film;
+    }
+
+    public Collection<Film> takeAll() {
+        return new ArrayList<>(filmBase.values());
+    }
+
+    public Film takeById(Integer id) {
+        return filmBase.get(id);
     }
 
     public boolean haveFilmByName(Film film) {
@@ -45,7 +61,7 @@ public class FilmStorageInMemory {
         return work;
     }
 
-    public boolean haveFilm(Film film) {
-        return filmBase.containsKey(film.getId());
+    public boolean haveFilm(Integer id) {
+        return filmBase.containsKey(id);
     }
 }

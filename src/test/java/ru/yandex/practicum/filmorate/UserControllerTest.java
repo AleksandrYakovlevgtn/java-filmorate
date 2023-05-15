@@ -6,8 +6,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import ru.yandex.practicum.filmorate.controller.UserController;
 import ru.yandex.practicum.filmorate.model.User;
-import ru.yandex.practicum.filmorate.service.UserStorageInMemory;
-import ru.yandex.practicum.filmorate.service.UsersService;
+import ru.yandex.practicum.filmorate.storage.InMemoryUserStorage;
+import ru.yandex.practicum.filmorate.service.UserService;
 
 import java.time.LocalDate;
 import java.util.Set;
@@ -22,10 +22,10 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 
 class UserControllerTest {
     private User user;
-    protected UserStorageInMemory userStorageInMemory = new UserStorageInMemory();
+    protected InMemoryUserStorage inMemoryUserStorage = new InMemoryUserStorage();
 
-    protected UsersService usersService = new UsersService(userStorageInMemory);
-    private UserController userController = new UserController(usersService);
+    protected UserService userService = new UserService(inMemoryUserStorage);
+    private UserController userController = new UserController(userService);
     private Validator val;
 
 
