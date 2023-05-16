@@ -12,9 +12,9 @@ import java.util.Map;
 @Component
 public class InMemoryFilmStorage implements FilmStorage {
     private HashMap<Integer, Film> filmBase = new HashMap<>();
-    protected int filmId = 0;
+    private int filmId = 0;
 
-    public int setFilmId() {
+    private int setFilmId() {
         return ++filmId;
     }
 
@@ -23,6 +23,11 @@ public class InMemoryFilmStorage implements FilmStorage {
     }
 
     public Film create(Film film) {
+        /*
+        if нужен для проверки id, по ТЗ если приходит фильм
+        без id ему нужно присвоить id, но если приходит фильм с id
+        его и нужно оставить.
+        */
         Integer id = film.getId();
         if (id == null || id == 0) {
             id = setFilmId();

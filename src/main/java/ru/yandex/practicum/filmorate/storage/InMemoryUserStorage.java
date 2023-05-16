@@ -12,9 +12,9 @@ import java.util.*;
 public class InMemoryUserStorage implements UserStorage {
 
     private HashMap<Integer, User> userBase = new HashMap<>();
-    protected int userid = 0;
+    private int userid = 0;
 
-    public int setUserId() {
+    private int setUserId() {
         return ++userid;
     }
 
