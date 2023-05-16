@@ -59,7 +59,7 @@ public class UserService implements InterfaceServiceUser {
         }
         dateUser.takeById(id).setFriendsId(friendId);
         dateUser.takeById(friendId).setFriendsId(id);
-        log.info("Пользователи " + dateUser.takeById(id).getName() + " и " + dateUser.takeById(friendId).getName() + " стали друзьями." );
+        log.info("Пользователи " + dateUser.takeById(id).getName() + " и " + dateUser.takeById(friendId).getName() + " стали друзьями.");
     }
 
     public void deleteFromFriend(Integer id, Integer friendId) {
