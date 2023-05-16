@@ -1,7 +1,6 @@
 package ru.yandex.practicum.filmorate.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.exceptions.ExceptionsUpdate;
 import ru.yandex.practicum.filmorate.model.Film;
@@ -14,7 +13,6 @@ import ru.yandex.practicum.filmorate.storage.InMemoryUserStorage;
 import java.util.*;
 import java.util.stream.Collectors;
 
-@Component
 @Service
 public class FilmService implements InterfaceServiceFilm {
     private static final Logger log = LoggerFactory.getLogger(FilmService.class);
@@ -29,6 +27,7 @@ public class FilmService implements InterfaceServiceFilm {
     }
 
     public Film create(Film film) {
+        //С начало проверяем есть ли такой фильм уже в базе
         if (dateFilm.haveFilm(film.getId())) {
             log.error("Фильм уже существует!");
             return film;

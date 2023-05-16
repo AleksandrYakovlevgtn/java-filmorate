@@ -57,12 +57,9 @@ public class UserService implements InterfaceServiceUser {
             log.info("Пользователь не существует!");
             throw new ExceptionsUpdate("Пользователь не существует!");
         }
-        User user = dateUser.takeById(id);
-        User user2 = dateUser.takeById(friendId);
-        user.setFriendsId(friendId);
-        user2.setFriendsId(id);
-        dateUser.update(user);
-        dateUser.update(user2);
+        dateUser.takeById(id).setFriendsId(friendId);
+        dateUser.takeById(friendId).setFriendsId(id);
+        log.info("Пользователи " + dateUser.takeById(id).getName() + " и " + dateUser.takeById(friendId).getName() + " стали друзьями." );
     }
 
     public void deleteFromFriend(Integer id, Integer friendId) {
