@@ -8,8 +8,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class FriendShip {
-    private int User1Id;
-    private int User2Id;
-
+    private int user1Id;
+    private int user2Id;
     private boolean status;
 }
