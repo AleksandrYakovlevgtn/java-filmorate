@@ -2,6 +2,7 @@ package ru.yandex.practicum.filmorate.service.InterfaceService;
 
 import ru.yandex.practicum.filmorate.model.User;
 
+import java.util.Collection;
 import java.util.List;
 
 public interface InterfaceServiceUser {
@@ -21,5 +22,5 @@ public interface InterfaceServiceUser {
 
     List<User> takeFriends(Integer id);
 
-    List<User> takeFriendsOfFriends(Integer id, Integer friendId);
+    Collection<User> takeFriendsOfFriends(Integer id, Integer friendId);
 }

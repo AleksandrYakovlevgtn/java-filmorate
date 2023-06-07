@@ -1,8 +1,8 @@
-package ru.yandex.practicum.filmorate.storage;
+package ru.yandex.practicum.filmorate.storage.InMemoryStorage.InterfaceStorage;
 
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.model.Film;
-import ru.yandex.practicum.filmorate.storage.InterfaceStorage.FilmStorage;
+import ru.yandex.practicum.filmorate.storage.interfaceStorage.FilmStorage;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -23,11 +23,6 @@ public class InMemoryFilmStorage implements FilmStorage {
     }
 
     public Film create(Film film) {
-        /*
-        if нужен для проверки id, по ТЗ если приходит фильм
-        без id ему нужно присвоить id, но если приходит фильм с id
-        его и нужно оставить.
-        */
         Integer id = film.getId();
         if (id == null || id == 0) {
             id = setFilmId();

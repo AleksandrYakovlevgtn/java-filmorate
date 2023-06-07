@@ -1,14 +1,14 @@
 package ru.yandex.practicum.filmorate.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
-import ru.yandex.practicum.filmorate.exceptions.ExceptionsUpdate;
 import ru.yandex.practicum.filmorate.model.Film;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ru.yandex.practicum.filmorate.service.InterfaceService.InterfaceServiceFilm;
-import ru.yandex.practicum.filmorate.storage.InMemoryFilmStorage;
-import ru.yandex.practicum.filmorate.storage.InMemoryUserStorage;
+import ru.yandex.practicum.filmorate.storage.DBStorage.FilmDbStorage;
+import ru.yandex.practicum.filmorate.storage.DBStorage.LikeDbStorage;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -17,72 +17,51 @@ import java.util.stream.Collectors;
 public class FilmService implements InterfaceServiceFilm {
     private static final Logger log = LoggerFactory.getLogger(FilmService.class);
 
-    private final InMemoryFilmStorage dateFilm;
-    private final InMemoryUserStorage dateUser;
+    private final FilmDbStorage filmStorage;
+    private final LikeDbStorage likeStorage;
+
 
     @Autowired
-    public FilmService(InMemoryFilmStorage dateFilm, InMemoryUserStorage dateUser) {
-        this.dateFilm = dateFilm;
-        this.dateUser = dateUser;
+    public FilmService(@Qualifier("FilmDbStorage") FilmDbStorage filmStorage,
+                       @Qualifier("LikeDbStorage") LikeDbStorage likeStorage) {
+        this.filmStorage = filmStorage;
+        this.likeStorage = likeStorage;
     }
 
     public Film create(Film film) {
-        //С начало проверяем есть ли такой фильм уже в базе
-        if (dateFilm.haveFilm(film.getId())) {
-            log.error("Фильм уже существует!");
-            return film;
-        }
-        log.info("Фильм создан!");
-        return dateFilm.create(film);
+        log.info("Запрос на создание фильма:" + film.getId());
+        return filmStorage.create(film);
     }
 
     public Film update(Film film) {
-        if (!dateFilm.haveFilm(film.getId())) {
-            throw new ExceptionsUpdate("Обновить не удалось, фильма не существует.");
-        }
-        return dateFilm.update(film);
+        log.info("Запрос на обновление фильма:" + film.getId());
+        return filmStorage.update(film);
     }
 
     public List<Film> takeAll() {
-        log.info("Получены все фильмы");
-        return new ArrayList<>(dateFilm.getFilmBase().values());
+        log.info("Запрос на получения списка фильмов.");
+        return new ArrayList<>(filmStorage.takeAll());
     }
 
     public List<Film> takePopular(Integer count) {
-        log.info("Получен список популярных фильмов");
-        return dateFilm.takeAll().stream()
+        log.info("Получен список популярных фильмов.");
+        return filmStorage.takeAll().stream()
                 .sorted(Comparator.comparing(film -> -film.getLikes().size())).limit(count)
                 .collect(Collectors.toList());
     }
 
     public Film takeById(Integer id) {
-        if (!dateFilm.haveFilm(id)) {
-            log.error("Фильм не существует!");
-            throw new ExceptionsUpdate("Пользователь не существует!");
-        }
-        log.info("Получен фильм по id");
-        return dateFilm.takeById(id);
+        log.info("Запрос на получения фильма по id: " + id);
+        return filmStorage.takeById(id);
     }
 
-    public void addLike(Integer id, Integer userID) {
-        if (dateFilm.haveFilm(id) && dateUser.haveUser(userID)) {
-            dateFilm.takeById(id).getLikes().add(id);
-            log.info("Поставлен like фильму " + dateFilm.takeById(id).getName());
-            dateFilm.update(dateFilm.takeById(id));
-        } else {
-            log.error("При попытке поставить like произошла ошибка, пользователь или фильм не найден.");
-            throw new ExceptionsUpdate("При попытке поставить like произошла ошибка, пользователь или фильм не найден.");
-        }
+    public void addLike(Integer userId, Integer filmId) {
+        log.info("Запрос на добавление лайка.");
+        likeStorage.addLike(userId, filmId);
     }
 
-    public void deleteLike(Integer id, Integer userID) {
-        if (dateFilm.haveFilm(id) && dateUser.haveUser(userID)) {
-            dateFilm.takeById(id).getLikes().remove(id);
-            log.info("Удален like фильму " + dateFilm.takeById(id).getName());
-            dateFilm.update(dateFilm.takeById(id));
-        } else {
-            log.error("При попытке удалить like произошла ошибка, пользователь или фильм не найден.");
-            throw new ExceptionsUpdate("При попытке удалить like произошла ошибка, пользователь или фильм не найден.");
-        }
+    public void deleteLike(Integer filmId, Integer userID) {
+        log.info("Запрос на удаление лайка.");
+        likeStorage.deleteLike(userID, filmId);
     }
 }

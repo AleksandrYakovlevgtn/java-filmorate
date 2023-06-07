@@ -34,7 +34,6 @@ public class FilmController {
         return ResponseEntity.ok(filmService.update(film));
     }
 
-
     @GetMapping
     public List<Film> takeFilms() {
         return filmService.takeAll();
@@ -47,12 +46,12 @@ public class FilmController {
 
     @PutMapping("/{id}/like/{userId}")
     public void addLikeFilm(@PathVariable Integer id, @PathVariable Integer userId) {
-        filmService.addLike(id, userId);
+        filmService.addLike(userId, id);
     }
 
     @DeleteMapping("/{id}/like/{userId}")
     public void deleteLikeFilm(@PathVariable Integer id, @PathVariable Integer userId) {
-        filmService.deleteLike(id, userId);
+        filmService.deleteLike(userId, id);
     }
 
     @GetMapping("/popular")

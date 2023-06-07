@@ -27,7 +27,7 @@ public class User {
     @Past(message = "дата рождения не может быть в будущем.")
     LocalDate birthday;
 
-    private final Set<Integer> friendsId = new HashSet<>();
+    private Set<Integer> friendsId = new HashSet<>();
 
     public void setFriendsId(Integer id) {
         friendsId.add(id);

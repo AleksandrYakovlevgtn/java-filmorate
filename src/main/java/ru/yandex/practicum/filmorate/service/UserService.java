@@ -3,88 +3,85 @@ package ru.yandex.practicum.filmorate.service;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
-import ru.yandex.practicum.filmorate.exceptions.ExceptionsUpdate;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.service.InterfaceService.InterfaceServiceUser;
-import ru.yandex.practicum.filmorate.storage.InMemoryUserStorage;
+import ru.yandex.practicum.filmorate.storage.DBStorage.FriendshipDbStorage;
+import ru.yandex.practicum.filmorate.storage.DBStorage.UserDbStorage;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class UserService implements InterfaceServiceUser {
-    private final InMemoryUserStorage dateUser;
+    private final UserDbStorage userStorage;
+    private final FriendshipDbStorage friendStorage;
+
     private static final Logger log = LoggerFactory.getLogger(UserService.class);
 
     @Autowired
-    public UserService(InMemoryUserStorage dateUser) {
-        this.dateUser = dateUser;
+    public UserService(@Qualifier("UserDbStorage") UserDbStorage userStorage,
+                       @Qualifier("FriendshipDbStorage") FriendshipDbStorage friendStorage) {
+        this.userStorage = userStorage;
+        this.friendStorage = friendStorage;
     }
 
     public User create(User user) {
-        if (dateUser.haveUser(user.getId())) {
-            log.error("Пользователь уже существует!");
-            return user;
-        }
-        log.info("Пользователь создан!");
-        return dateUser.create(user);
+        log.info("Получен запрос на создание пользователя!");
+        return userStorage.create(user);
     }
 
     public User update(User user) {
-        if (dateUser.haveUserByEmail(user)) {
-            throw new ExceptionsUpdate("Обновить не удалось, пользователь не существует");
-        }
-        log.info("Пользователь обновлен!");
-        return dateUser.update(user);
+        log.info("Получен запрос на обновление пользователя!");
+        return userStorage.update(user);
     }
 
     public List<User> takeAll() {
-        log.info("Получены все пользователи");
-        return new ArrayList<>(dateUser.getUserBase().values());
+        log.info("Получены запрос на получения списка пользователей.");
+        return new ArrayList<>(userStorage.takeAll());
     }
 
     public User takeById(Integer id) {
-        if (!dateUser.haveUser(id)) {
-            log.info("Пользователь не существует!");
-            throw new ExceptionsUpdate("Пользователь не существует!");
-        }
-        log.info("Получен пользователь по id");
-        return dateUser.takeById(id);
+        log.info("Получен запрос на получение пользователя по id");
+        return userStorage.takeById(id);
     }
 
     public void addFriend(Integer id, Integer friendId) {
-        if ((!dateUser.haveUser(id) || (!dateUser.haveUser(friendId)))) {
-            log.info("Пользователь не существует!");
-            throw new ExceptionsUpdate("Пользователь не существует!");
-        }
-        dateUser.takeById(id).setFriendsId(friendId);
-        dateUser.takeById(friendId).setFriendsId(id);
-        log.info("Пользователи " + dateUser.takeById(id).getName() + " и " + dateUser.takeById(friendId).getName() + " стали друзьями.");
+        log.info("Получен запрос на добавления в друзья.");
+        friendStorage.addFriend(id, friendId);
     }
 
     public void deleteFromFriend(Integer id, Integer friendId) {
-        if ((!dateUser.haveUser(id)) || (!dateUser.haveUser(friendId))) {
-            log.info("Пользователь не существует!");
-            throw new ExceptionsUpdate("Пользователь не существует!");
-        }
-        User user = dateUser.takeById(id);
-        user.getFriendsId().remove(friendId);
-        dateUser.update(user);
+        log.info("Получен запрос на удаление из друзья.");
+        friendStorage.deleteFriend(id, friendId);
     }
 
     public List<User> takeFriends(Integer id) {
-        if (!dateUser.haveUser(id)) {
-            log.info("Пользователь не существует!");
-            throw new ExceptionsUpdate("Пользователь не существует!");
+        List<User> users = new ArrayList<>();
+        User user = userStorage.takeById(id);
+        for (Integer friendsIds : user.getFriendsId()) {
+            users.add(userStorage.takeById(friendsIds));
         }
-        return dateUser.takeFriends(id);
+        log.info("Получен список друзей пользователя.");
+        return users;
     }
 
-    public List<User> takeFriendsOfFriends(Integer id, Integer friendId) {
-        if ((!dateUser.haveUser(id)) || (!dateUser.haveUser(friendId))) {
-            log.info("Пользователь не существует!");
-            throw new ExceptionsUpdate("Пользователь не существует!");
+    public Collection<User> takeFriendsOfFriends(Integer id, Integer friendId) {
+        User user1 = userStorage.takeById(id);
+        User user2 = userStorage.takeById(friendId);
+        if (user1.getFriendsId() == null && user2.getFriendsId() == null) {
+            return new HashSet<>();
+        } else {
+            Set<User> users = new HashSet<>();
+            Set<Integer> confirmUsers = user1.getFriendsId()
+                    .stream()
+                    .filter(user2.getFriendsId()::contains)
+                    .collect(Collectors.toSet());
+            for (Integer comfirmIds : confirmUsers) {
+                users.add(userStorage.takeById(comfirmIds));
+            }
+            return users;
         }
-        return dateUser.takeFriendsOfFriends(id, friendId);
     }
 }

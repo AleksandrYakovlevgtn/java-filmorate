@@ -7,6 +7,7 @@ import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.service.UserService;
 
 import javax.validation.Valid;
+import java.util.ArrayList;
 import java.util.List;
 
 @Slf4j
@@ -47,7 +48,7 @@ public class UserController {
 
     @GetMapping("{id}/friends/common/{otherId}")
     public List<User> takeFriendsOfFriends(@PathVariable Integer id, @PathVariable Integer otherId) {
-        return userService.takeFriendsOfFriends(id, otherId);
+        return new ArrayList<>(userService.takeFriendsOfFriends(id, otherId));
     }
 
     @GetMapping
