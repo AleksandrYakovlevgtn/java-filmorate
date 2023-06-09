@@ -81,10 +81,7 @@ public class LikeDbStorage implements LikeStorage {
     }
 
     public boolean haveFilm(Integer id) {
-        /*Не смог решить проблему цикличности создания класса
-        поэтому перенес метод из фильмДбсторадже в лайкДбСторадже
-         */
-        String sql = " SELECT EXISTS(SELECT 1 FROM FILM WHERE FILM_ID = ?);";
+        String sql = " SELECT EXISTS(SELECT 1 FROM FILM WHERE ID = ?);";
         try {
             boolean resultOfHave = false;
             Boolean result = jdbcTemplate.queryForObject(sql, Boolean.class, id);

@@ -45,32 +45,34 @@ public class UserDbStorage implements UserStorage {
             log.info("Получен список пользователей.");
             return users;
         } catch (EmptyResultDataAccessException o) {
+            log.error("Пользователи не найдены.");
             throw new ExceptionsUpdate("Пользователи не найдены.");
         }
     }
 
     @Override
     public User takeById(Integer id) {
-        String sql = "SELECT * FROM USERS WHERE USER_ID = ?;";
+        String sql = "SELECT * FROM USERS WHERE ID = ?;";
         try {
             User user = jdbcTemplate.queryForObject(sql, this::createUser, id);
             log.info("Получен пользователь по id: " + id);
             return user;
         } catch (EmptyResultDataAccessException o) {
+            log.error("Не существует пользователя с id: " + id);
             throw new ExceptionsUpdate("Не существует пользователя с id: " + id);
         }
     }
 
     @Override
     public User create(User user) {
-        String sql = "INSERT INTO USERS(USER_EMAIL,USER_LOGIN, USER_NAME, USER_BIRTHDAY) VALUES(?, ?, ?, ?);";
+        String sql = "INSERT INTO USERS(EMAIL, LOGIN, NAME, BIRTHDAY) VALUES(?, ?, ?, ?);";
         try {
             KeyHolder keyHolder = new GeneratedKeyHolder();
             if (user.getName() == null || user.getName().isBlank()) {
                 user.setName(StringUtils.isBlank(user.getName()) ? user.getLogin() : user.getName());
             }
             jdbcTemplate.update(con -> {
-                PreparedStatement p = con.prepareStatement(sql, new String[]{"USER_ID"});
+                PreparedStatement p = con.prepareStatement(sql, new String[]{"ID"});
                 p.setString(1, user.getEmail());
                 p.setString(2, user.getLogin());
                 p.setString(3, user.getName());
@@ -81,52 +83,50 @@ public class UserDbStorage implements UserStorage {
             log.info("Добавили в таблицу пользователя с id: " + user.getId());
             return user;
         } catch (DuplicateKeyException o) {
+            log.error("Пользователь с id: " + user.getId() + " уже существует.");
             throw new ExceptionsUpdate("Пользователь с id: " + user.getId() + " уже существует.");
         }
     }
 
     @Override
     public User update(User user) {
-        String sql = "UPDATE USERS SET USER_EMAIL = ?, USER_LOGIN = ?, USER_NAME = ?, USER_BIRTHDAY = ? WHERE USER_ID = ?;";
+        String sql = "UPDATE USERS SET EMAIL = ?, LOGIN = ?, NAME = ?, BIRTHDAY = ? WHERE ID = ?;";
         try {
             int update = jdbcTemplate.update(sql, user.getEmail(), user.getLogin(), user.getName(), user.getBirthday(), user.getId());
             if (update > 0) {
                 log.info("Обновлен пользователь с id: " + user.getId());
                 return user;
             } else {
-                throw new ExceptionsUpdate("Пользователь не обнавлен.");
+                throw new ExceptionsUpdate("Пользователь не обновлен.");
             }
         } catch (DuplicateKeyException o) {
+            log.error("Обновление не прошло по причине ошибки.");
             throw new ExceptionsUpdate("Обновление не прошло по причине ошибки.");
         }
     }
 
     @Override
-    public boolean haveUserByEmail(User user) {
-        return false;
-    }
-
-    @Override
     public boolean haveUser(Integer id) {
-        boolean haveUser = false;
-        String sql = "SELECT EXISTS(SELECT 1 FROM USERS WHERE USER_ID = ?);";
+        String sql = "SELECT EXISTS(SELECT 1 FROM USERS WHERE ID = ?);";
         try {
             Boolean result = jdbcTemplate.queryForObject(sql, Boolean.class, id);
             if (result != null) {
-                haveUser = result;
+                return result;
+            } else {
+                return false;
             }
         } catch (EmptyResultDataAccessException o) {
+            log.error("При проверке на существование пользователя с id: " + id + " получили exception");
             throw new ExceptionsUpdate("Пользователь не найден с таким id " + id);
         }
-        return haveUser;
     }
 
     public User createUser(ResultSet rs, int rowNum) throws SQLException {
-        int id = rs.getInt("USER_ID");
-        String email = rs.getString("USER_EMAIL");
-        String login = rs.getString("USER_LOGIN");
-        String name = rs.getString("USER_NAME");
-        LocalDate birthday = rs.getDate("USER_BIRTHDAY").toLocalDate();
+        int id = rs.getInt("ID");
+        String email = rs.getString("EMAIL");
+        String login = rs.getString("LOGIN");
+        String name = rs.getString("NAME");
+        LocalDate birthday = rs.getDate("BIRTHDAY").toLocalDate();
         Set<Integer> friends = friendshipStorage.takeFriendsOfUser(id);
         return new User(id, email, login, name, birthday, friends);
     }

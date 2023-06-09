@@ -31,13 +31,13 @@ public class GenreDbStorage implements GenreStorage {
     @Override
     public List<Genre> takeAll() {
         log.info("Получен список жанров.");
-        String sql = "SELECT * FROM GENRE ORDER BY GENRE_ID;";
+        String sql = "SELECT * FROM GENRE ORDER BY ID;";
         return jdbcTemplate.query(sql, this::createGenre);
     }
 
     @Override
     public Genre takeById(int id) {
-        String sql = "SELECT * FROM GENRE WHERE GENRE_ID = ?;";
+        String sql = "SELECT * FROM GENRE WHERE ID = ?;";
         try {
             log.info("Получен жанр с id:" + id);
             return jdbcTemplate.queryForObject(sql, this::createGenre, id);
@@ -48,9 +48,9 @@ public class GenreDbStorage implements GenreStorage {
 
     @Override
     public Set<Genre> takeGenreOfFilm(int filmId) {
-        String sql = "SELECT G.GENRE_ID, G.GENRE_NAME" +
+        String sql = "SELECT G.ID, G.NAME" +
                 " FROM GENRE_FILM AS GFILM " +
-                "INNER JOIN GENRE AS G ON GFILM.GENRE_ID = G.GENRE_ID " +
+                "INNER JOIN GENRE AS G ON GFILM.GENRE_ID = G.ID " +
                 "WHERE GFILM.FILM_ID = ?;";
         try {
             Set<Genre> genres = new HashSet<>(jdbcTemplate.query(sql, this::createGenre, filmId));
@@ -91,6 +91,6 @@ public class GenreDbStorage implements GenreStorage {
 
 
     public Genre createGenre(ResultSet rs, int rowNum) throws SQLException {
-        return new Genre(rs.getInt("GENRE_ID"), rs.getString("GENRE_NAME"));
+        return new Genre(rs.getInt("ID"), rs.getString("NAME"));
     }
 }

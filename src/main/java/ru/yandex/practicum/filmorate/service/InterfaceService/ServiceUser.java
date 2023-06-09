@@ -5,7 +5,7 @@ import ru.yandex.practicum.filmorate.model.User;
 import java.util.Collection;
 import java.util.List;
 
-public interface InterfaceServiceUser {
+public interface ServiceUser {
 
     User create(User user);
 

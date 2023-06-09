@@ -35,9 +35,10 @@ public class FriendshipDbStorage implements FriendshipStorage {
     public void addFriend(int user1Id, int user2id) {
         try {
             if ((user1Id < 0 || user2id < 0) || user1Id == user2id) {
+                log.error("Ошибка при создании дружбы в id:" + user1Id + " " + user2id);
                 throw new ExceptionsUpdate("Ошибка при создании дружбы в id:" + user1Id + " " + user2id);
             } else {
-                String sql = "SELECT * FROM FRIENDSHIP WHERE (USER_1_ID = ? AND USER_2_ID = ?);";
+                String sql = "SELECT * FROM FRIENDSHIP WHERE (USER_ID = ? AND FRIEND_ID = ?);";
                 ResultSetWrappingSqlRowSet rs = (ResultSetWrappingSqlRowSet) jdbcTemplate.queryForRowSet(sql, user1Id, user2id);
                 CachedRowSet set1 = (CachedRowSet) rs.getResultSet();
                 ResultSetWrappingSqlRowSet rs2 = (ResultSetWrappingSqlRowSet) jdbcTemplate.queryForRowSet(sql, user2id, user1Id);
@@ -47,19 +48,20 @@ public class FriendshipDbStorage implements FriendshipStorage {
                 } else if (set2.next()) {
                     confirmationFriend(user2id, user1Id);
                 } else {
-                    String confirmSql = "INSERT INTO FRIENDSHIP(USER_1_ID, USER_2_ID, FRIENDSHIP_STATUS) VALUES(?, ?, ?);";
+                    String confirmSql = "INSERT INTO FRIENDSHIP(USER_ID, FRIEND_ID, STATUS) VALUES(?, ?, ?);";
                     jdbcTemplate.update(confirmSql, user1Id, user2id, false);
                     log.info("Запрос в друзья оформлен.");
                 }
             }
         } catch (DataAccessException | SQLException o) {
+            log.error("При добавлении дружбы произошла ошибка.");
             throw new ExceptionsUpdate("При добавлении дружбы произошла ошибка.");
         }
     }
 
     @Override
     public void confirmationFriend(int user1Id, int user2id) {
-        String sql = "UPDATE FRIENDSHIP SET FRIENDSHIP_STATUS = TRUE WHERE USER_1_ID = ? AND USER_2_ID = ?;";
+        String sql = "UPDATE FRIENDSHIP SET STATUS = TRUE WHERE USER_ID = ? AND FRIEND_ID = ?;";
         try {
             int update = jdbcTemplate.update(sql, user1Id, user2id);
             if (update > 0) {
@@ -68,13 +70,14 @@ public class FriendshipDbStorage implements FriendshipStorage {
                 log.info("Дружба между пользователем с id: " + user1Id + " и пользователем с id: " + user2id + " не подтверждена.");
             }
         } catch (DataAccessException o) {
+            log.error("Дружба между пользователем с id: " + user1Id + " и пользователем с id: " + user2id + " не подтверждена из за ошибки");
             throw new ExceptionsUpdate("Дружба между пользователем с id: " + user1Id + " и пользователем с id: " + user2id + " не подтверждена из за ошибки");
         }
     }
 
     @Override
     public void deleteFriend(int user1Id, int user2id) {
-        String sql = "DELETE FROM FRIENDSHIP WHERE USER_1_ID = ? AND USER_2_ID = ?;";
+        String sql = "DELETE FROM FRIENDSHIP WHERE USER_ID = ? AND FRIEND_ID = ?;";
         try {
             int update = jdbcTemplate.update(sql, user1Id, user2id);
             if (update > 0) {
@@ -83,13 +86,14 @@ public class FriendshipDbStorage implements FriendshipStorage {
                 log.info("Дружба между пользователем с id: " + user1Id + " и пользователем с id: " + user2id + " не удалена.");
             }
         } catch (DataAccessException o) {
+            log.error("Дружба между пользователем с id: " + user1Id + " и пользователем с id: " + user2id + " не удалена из за ошибки");
             throw new ExceptionsUpdate("Дружба между пользователем с id: " + user1Id + " и пользователем с id: " + user2id + " не удалена из за ошибки");
         }
     }
 
     @Override
     public Set<FriendShip> takeFriendShip(int userId) {
-        String sql = "SELECT * FROM FRIENDSHIP WHERE USER_1_ID = ? OR USER_2_ID = ?;";
+        String sql = "SELECT * FROM FRIENDSHIP WHERE USER_ID = ? OR FRIEND_ID = ?;";
         try {
             Collection<FriendShip> set = jdbcTemplate.query(sql, this::createFriendship, userId, userId);
             log.info("Получен список друзей пользователя");
@@ -119,9 +123,9 @@ public class FriendshipDbStorage implements FriendshipStorage {
     }
 
     public FriendShip createFriendship(ResultSet rs, int rowNum) throws SQLException {
-        int user1Id = rs.getInt("USER_1_ID");
-        int user2Id = rs.getInt("USER_2_ID");
-        boolean status = rs.getBoolean("FRIENDSHIP_STATUS");
+        int user1Id = rs.getInt("USER_ID");
+        int user2Id = rs.getInt("FRIEND_ID");
+        boolean status = rs.getBoolean("STATUS");
         return new FriendShip(user1Id, user2Id, status);
     }
 }

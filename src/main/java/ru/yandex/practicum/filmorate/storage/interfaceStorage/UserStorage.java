@@ -13,7 +13,5 @@ public interface UserStorage {
 
     User takeById(Integer id);
 
-    boolean haveUserByEmail(User user);
-
     boolean haveUser(Integer id);
 }

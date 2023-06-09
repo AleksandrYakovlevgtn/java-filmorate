@@ -6,7 +6,7 @@ import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.model.Film;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import ru.yandex.practicum.filmorate.service.InterfaceService.InterfaceServiceFilm;
+import ru.yandex.practicum.filmorate.service.InterfaceService.ServiceFilm;
 import ru.yandex.practicum.filmorate.storage.DBStorage.FilmDbStorage;
 import ru.yandex.practicum.filmorate.storage.DBStorage.LikeDbStorage;
 
@@ -14,16 +14,16 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
-public class FilmService implements InterfaceServiceFilm {
-    private static final Logger log = LoggerFactory.getLogger(FilmService.class);
+public class FilmServiceImpl implements ServiceFilm {
+    private static final Logger log = LoggerFactory.getLogger(FilmServiceImpl.class);
 
     private final FilmDbStorage filmStorage;
     private final LikeDbStorage likeStorage;
 
 
     @Autowired
-    public FilmService(@Qualifier("FilmDbStorage") FilmDbStorage filmStorage,
-                       @Qualifier("LikeDbStorage") LikeDbStorage likeStorage) {
+    public FilmServiceImpl(@Qualifier("FilmDbStorage") FilmDbStorage filmStorage,
+                           @Qualifier("LikeDbStorage") LikeDbStorage likeStorage) {
         this.filmStorage = filmStorage;
         this.likeStorage = likeStorage;
     }
@@ -38,9 +38,9 @@ public class FilmService implements InterfaceServiceFilm {
         return filmStorage.update(film);
     }
 
-    public List<Film> takeAll() {
+    public Collection<Film> takeAll() {
         log.info("Запрос на получения списка фильмов.");
-        return new ArrayList<>(filmStorage.takeAll());
+        return filmStorage.takeAll();
     }
 
     public List<Film> takePopular(Integer count) {

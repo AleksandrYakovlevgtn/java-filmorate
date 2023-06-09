@@ -28,7 +28,7 @@ public class Film {
     @Min(value = 0, message = "продолжительность фильма должна быть положительной.")
     Integer duration;
 
-    Mpa mpa;
+    private Mpa mpa;
     private Set<Genre> genres = new HashSet<>();
     private Set<Integer> likes = new HashSet<>();
 }

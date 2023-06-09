@@ -4,7 +4,7 @@ import ru.yandex.practicum.filmorate.model.Mpa;
 
 import java.util.List;
 
-public interface InterfaceServiceMpa {
+public interface ServiceMpa {
 
     Mpa takeById(int id);
 

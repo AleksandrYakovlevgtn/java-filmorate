@@ -1,28 +1,26 @@
 package ru.yandex.practicum.filmorate.service;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.model.User;
-import ru.yandex.practicum.filmorate.service.InterfaceService.InterfaceServiceUser;
+import ru.yandex.practicum.filmorate.service.InterfaceService.ServiceUser;
 import ru.yandex.practicum.filmorate.storage.DBStorage.FriendshipDbStorage;
 import ru.yandex.practicum.filmorate.storage.DBStorage.UserDbStorage;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Service
-public class UserService implements InterfaceServiceUser {
+public class UserServiceImpl implements ServiceUser {
     private final UserDbStorage userStorage;
     private final FriendshipDbStorage friendStorage;
 
-    private static final Logger log = LoggerFactory.getLogger(UserService.class);
-
     @Autowired
-    public UserService(@Qualifier("UserDbStorage") UserDbStorage userStorage,
-                       @Qualifier("FriendshipDbStorage") FriendshipDbStorage friendStorage) {
+    public UserServiceImpl(@Qualifier("UserDbStorage") UserDbStorage userStorage,
+                           @Qualifier("FriendshipDbStorage") FriendshipDbStorage friendStorage) {
         this.userStorage = userStorage;
         this.friendStorage = friendStorage;
     }

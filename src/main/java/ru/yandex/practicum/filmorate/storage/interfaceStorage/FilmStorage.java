@@ -14,7 +14,5 @@ public interface FilmStorage {
 
     Film takeById(Integer id);
 
-    boolean haveFilmByName(Film film);
-
     boolean haveFilm(Integer id);
 }

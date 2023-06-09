@@ -28,7 +28,7 @@ public class MpaDbStorage implements MpaStorage {
     @Override
     public List<Mpa> takeAll() {
         try {
-            String sql = "SELECT * FROM MPA ORDER BY MPA_ID;";
+            String sql = "SELECT * FROM MPA ORDER BY ID;";
             List<Mpa> mpas = jdbcTemplate.query(sql, this::createMpa);
             log.info("Получен список MPA");
             return mpas;
@@ -40,7 +40,7 @@ public class MpaDbStorage implements MpaStorage {
     @Override
     public Mpa takeById(int id) {
         try {
-            String sql = "SELECT * FROM MPA WHERE MPA.MPA_ID = ?;";
+            String sql = "SELECT * FROM MPA WHERE ID = ?;";
             log.info("получен MPA по id: " + id);
             return jdbcTemplate.queryForObject(sql, this::createMpa, id);
         } catch (EmptyResultDataAccessException o) {
@@ -49,6 +49,6 @@ public class MpaDbStorage implements MpaStorage {
     }
 
     public Mpa createMpa(ResultSet rs, int rowNum) throws SQLException {
-        return new Mpa(rs.getInt("MPA_ID"), rs.getString("MPA_NAME"));
+        return new Mpa(rs.getInt("ID"), rs.getString("NAME"));
     }
 }

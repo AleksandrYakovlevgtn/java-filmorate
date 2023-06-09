@@ -49,31 +49,33 @@ public class FilmDbStorage implements FilmStorage {
             log.info("Получен список фильмов.");
             return films;
         } catch (EmptyResultDataAccessException o) {
+            log.error("Список фильмов пуст.");
             throw new ExceptionsUpdate("Список фильмов пуст.");
         }
     }
 
     @Override
     public Film takeById(Integer id) {
-        String sql = "SELECT * FROM FILM WHERE FILM_ID = ?;";
+        String sql = "SELECT * FROM FILM WHERE ID = ?;";
         try {
             Film film = jdbcTemplate.queryForObject(sql, this::createFilm, id);
             log.info("Получен фильм с id: " + id);
             return film;
         } catch (DataRetrievalFailureException o) {
+            log.error("Фильма с id: " + id + " в таблице нет.");
             throw new ExceptionsUpdate("Фильма с id: " + id + " в таблице нет.");
         }
     }
 
     @Override
     public Film create(Film film) {
-        String sql = "INSERT INTO FILM(FILM_NAME, FILM_DESCRIPTION," +
-                " FILM_RELEASE_DATE, FILM_DURATION, FILM_MPA_ID)" +
+        String sql = "INSERT INTO FILM(NAME, DESCRIPTION," +
+                " RELEASE_DATE, DURATION, MPA_ID)" +
                 " VALUES(?, ?, ?, ?, ?);";
         try {
             KeyHolder keyHolder = new GeneratedKeyHolder();
             jdbcTemplate.update(connection -> {
-                PreparedStatement pr = connection.prepareStatement(sql, new String[]{"FILM_ID"});
+                PreparedStatement pr = connection.prepareStatement(sql, new String[]{"ID"});
                 pr.setString(1, film.getName());
                 pr.setString(2, film.getDescription());
                 pr.setDate(3, Date.valueOf(film.getReleaseDate()));
@@ -91,13 +93,14 @@ public class FilmDbStorage implements FilmStorage {
             }
             return takeById(film.getId());
         } catch (DuplicateKeyException o) {
+            log.error("Фильм уже существует");
             throw new ExceptionsUpdate("Фильм уже существует");
         }
     }
 
     @Override
     public Film update(Film film) {
-        String sql = "UPDATE FILM SET FILM_NAME = ?, FILM_DESCRIPTION = ?, FILM_RELEASE_DATE = ?, FILM_DURATION = ?, FILM_MPA_ID = ? WHERE FILM_ID = ?;";
+        String sql = "UPDATE FILM SET NAME = ?, DESCRIPTION = ?, RELEASE_DATE = ?, DURATION = ?, MPA_ID = ? WHERE ID = ?;";
         try {
             Film workFilm = takeById(film.getId());
             if (Optional.ofNullable(workFilm.getGenres()).isPresent()) {
@@ -126,37 +129,34 @@ public class FilmDbStorage implements FilmStorage {
             }
             return takeById(film.getId());
         } catch (EmptyResultDataAccessException o) {
+            log.error("При обновлении фильма произошла ошибка.");
             throw new ExceptionsUpdate("При обновлении фильма произошла ошибка.");
         }
     }
 
     @Override
-    public boolean haveFilmByName(Film film) {
-        return false;
-    }
-
-    @Override
     public boolean haveFilm(Integer id) {
-        String sql = "SELECT EXISTS(SELECT 1 FROM FILM WHERE FILM_ID = ?);";
+        String sql = "SELECT EXISTS(SELECT 1 FROM FILM WHERE ID = ?);";
         try {
-            boolean resultOfHave = false;
             Boolean result = jdbcTemplate.queryForObject(sql, Boolean.class, id);
             if (result != null) {
-                resultOfHave = result;
+                return result;
+            } else {
+            return false;
             }
-            return resultOfHave;
         } catch (EmptyResultDataAccessException o) {
+            log.error("При проверке на существования фильма в таблице получили exception.");
             throw new ExceptionsUpdate("При проверке на существования фильма в таблице получили exception.");
         }
     }
 
     public Film createFilm(ResultSet rs, int rowNum) throws SQLException {
-        int id = rs.getInt("FILM_ID");
-        String name = rs.getString("FILM_NAME");
-        String description = rs.getString("FILM_DESCRIPTION");
-        LocalDate releaseDate = rs.getDate("FILM_RELEASE_DATE").toLocalDate();
-        int duration = rs.getInt("FILM_DURATION");
-        int mpaId = rs.getInt("FILM_MPA_ID");
+        int id = rs.getInt("ID");
+        String name = rs.getString("NAME");
+        String description = rs.getString("DESCRIPTION");
+        LocalDate releaseDate = rs.getDate("RELEASE_DATE").toLocalDate();
+        int duration = rs.getInt("DURATION");
+        int mpaId = rs.getInt("MPA_ID");
 
         Mpa mpa = mpaStorage.takeById(mpaId);
         Set<Genre> genres = genreStorage.takeGenreOfFilm(id);
