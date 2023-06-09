@@ -45,7 +45,7 @@ public class UserDbStorage implements UserStorage {
             log.info("Получен список пользователей.");
             return users;
         } catch (EmptyResultDataAccessException o) {
-            log.error("Пользователи не найдены.");
+            log.error("При получении списка пользователей получили exception,", o.getMessage());
             throw new ExceptionsUpdate("Пользователи не найдены.");
         }
     }
@@ -58,7 +58,7 @@ public class UserDbStorage implements UserStorage {
             log.info("Получен пользователь по id: " + id);
             return user;
         } catch (EmptyResultDataAccessException o) {
-            log.error("Не существует пользователя с id: " + id);
+            log.error("При получении пользователя с id: " + id + " получили exception", o.getMessage());
             throw new ExceptionsUpdate("Не существует пользователя с id: " + id);
         }
     }
@@ -83,7 +83,7 @@ public class UserDbStorage implements UserStorage {
             log.info("Добавили в таблицу пользователя с id: " + user.getId());
             return user;
         } catch (DuplicateKeyException o) {
-            log.error("Пользователь с id: " + user.getId() + " уже существует.");
+            log.error("При создании пользователя с id: " + user.getId() + " получили exception так как пользователь существует.", o.getMessage());
             throw new ExceptionsUpdate("Пользователь с id: " + user.getId() + " уже существует.");
         }
     }
@@ -100,7 +100,7 @@ public class UserDbStorage implements UserStorage {
                 throw new ExceptionsUpdate("Пользователь не обновлен.");
             }
         } catch (DuplicateKeyException o) {
-            log.error("Обновление не прошло по причине ошибки.");
+            log.error("При оновлении пользователя  получили exception.", o.getMessage());
             throw new ExceptionsUpdate("Обновление не прошло по причине ошибки.");
         }
     }
@@ -116,7 +116,7 @@ public class UserDbStorage implements UserStorage {
                 return false;
             }
         } catch (EmptyResultDataAccessException o) {
-            log.error("При проверке на существование пользователя с id: " + id + " получили exception");
+            log.error("При проверке на существование пользователя с id: " + id + " получили exception", o.getMessage());
             throw new ExceptionsUpdate("Пользователь не найден с таким id " + id);
         }
     }

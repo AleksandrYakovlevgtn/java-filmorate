@@ -43,6 +43,7 @@ public class LikeDbStorage implements LikeStorage {
                 }
             }
         } catch (SQLException o) {
+            log.error("При получении лайков у фильма с id: " + id + " получили exception",o.getMessage());
             throw new RuntimeException(o.getMessage());
         }
         log.info("У фильма с id: " + id + " получено likes: " + likes.size());
@@ -73,9 +74,11 @@ public class LikeDbStorage implements LikeStorage {
                 jdbcTemplate.update(sql, userId, filmId);
                 log.info("Like фильму с id: " + filmId + " пользователем с id: " + userId + " удален.");
             } else {
+                log.error("При удалении лайка получили exception");
                 throw new ExceptionsUpdate("Like не удален.");
             }
         } catch (DataAccessException o) {
+            log.error("При удалении лайка получили получили DataAccessException",o.getMessage());
             throw new ExceptionsUpdate("Like не удален.");
         }
     }
@@ -90,6 +93,7 @@ public class LikeDbStorage implements LikeStorage {
             }
             return resultOfHave;
         } catch (EmptyResultDataAccessException o) {
+            log.error("При проверке на существования фильма получили exception",o.getMessage());
             throw new ExceptionsUpdate("При проверке на существования фильма в таблице получили exception.");
         }
     }

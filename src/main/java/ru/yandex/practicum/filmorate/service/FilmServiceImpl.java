@@ -1,29 +1,27 @@
 package ru.yandex.practicum.filmorate.service;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.model.Film;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import ru.yandex.practicum.filmorate.service.InterfaceService.ServiceFilm;
-import ru.yandex.practicum.filmorate.storage.DBStorage.FilmDbStorage;
-import ru.yandex.practicum.filmorate.storage.DBStorage.LikeDbStorage;
+import ru.yandex.practicum.filmorate.service.InterfaceService.FilmService;
+import ru.yandex.practicum.filmorate.storage.interfaceStorage.FilmStorage;
+import ru.yandex.practicum.filmorate.storage.interfaceStorage.LikeStorage;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Service
-public class FilmServiceImpl implements ServiceFilm {
-    private static final Logger log = LoggerFactory.getLogger(FilmServiceImpl.class);
-
-    private final FilmDbStorage filmStorage;
-    private final LikeDbStorage likeStorage;
+public class FilmServiceImpl implements FilmService {
+    private final FilmStorage filmStorage;
+    private final LikeStorage likeStorage;
 
 
     @Autowired
-    public FilmServiceImpl(@Qualifier("FilmDbStorage") FilmDbStorage filmStorage,
-                           @Qualifier("LikeDbStorage") LikeDbStorage likeStorage) {
+    public FilmServiceImpl(@Qualifier("FilmDbStorage") FilmStorage filmStorage,
+                           @Qualifier("LikeDbStorage") LikeStorage likeStorage) {
         this.filmStorage = filmStorage;
         this.likeStorage = likeStorage;
     }

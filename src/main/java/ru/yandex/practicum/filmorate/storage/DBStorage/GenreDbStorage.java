@@ -42,6 +42,7 @@ public class GenreDbStorage implements GenreStorage {
             log.info("Получен жанр с id:" + id);
             return jdbcTemplate.queryForObject(sql, this::createGenre, id);
         } catch (EmptyResultDataAccessException o) {
+            log.error("При получении жанра по ид получили exception",o.getMessage());
             throw new ExceptionsUpdate("Жанр не найден с таким id " + id);
         }
     }
@@ -57,6 +58,7 @@ public class GenreDbStorage implements GenreStorage {
             log.info("Получены жанры фильма с id: " + filmId);
             return genres;
         } catch (EmptyResultDataAccessException o) {
+            log.error("При получении жанров у фильма  получили exception",o.getMessage());
             throw new ExceptionsUpdate("Для фильма с id: " + filmId + " нет жанров");
         }
     }
@@ -70,6 +72,7 @@ public class GenreDbStorage implements GenreStorage {
                 log.info("Для фильма с id: " + filmId + " добавлен жанр с id: " + genreId);
             }
         } catch (DataAccessException o) {
+            log.error("При добавлении жанров к фильму получили exception",o.getMessage());
             throw new ExceptionsUpdate("Жанры не добавлены");
         }
     }
@@ -82,9 +85,10 @@ public class GenreDbStorage implements GenreStorage {
             if (delete > 0) {
                 log.info("Жанр с id: " + genreId + " удален у фильма с id: " + filmId);
             } else {
-                log.info("Удаление жанра c id: " + genreId + " у фильма с id: " + filmId + " не прошло так как жанр или фильм не найдены");
+                log.error("Удаление жанра c id: " + genreId + " у фильма с id: " + filmId + " не прошло так как жанр или фильм не найдены");
             }
         } catch (DataAccessException o) {
+            log.error("При удалении жанра у фильма  получили exception",o.getMessage());
             throw new ExceptionsUpdate("При удалении жанра что то пошло не так.");
         }
     }

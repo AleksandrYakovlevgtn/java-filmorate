@@ -5,22 +5,22 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.model.User;
-import ru.yandex.practicum.filmorate.service.InterfaceService.ServiceUser;
-import ru.yandex.practicum.filmorate.storage.DBStorage.FriendshipDbStorage;
-import ru.yandex.practicum.filmorate.storage.DBStorage.UserDbStorage;
+import ru.yandex.practicum.filmorate.service.InterfaceService.UserService;
+import ru.yandex.practicum.filmorate.storage.interfaceStorage.FriendshipStorage;
+import ru.yandex.practicum.filmorate.storage.interfaceStorage.UserStorage;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
 @Slf4j
 @Service
-public class UserServiceImpl implements ServiceUser {
-    private final UserDbStorage userStorage;
-    private final FriendshipDbStorage friendStorage;
+public class UserServiceImpl implements UserService {
+    private final UserStorage userStorage;
+    private final FriendshipStorage friendStorage;
 
     @Autowired
-    public UserServiceImpl(@Qualifier("UserDbStorage") UserDbStorage userStorage,
-                           @Qualifier("FriendshipDbStorage") FriendshipDbStorage friendStorage) {
+    public UserServiceImpl(@Qualifier("UserDbStorage") UserStorage userStorage,
+                           @Qualifier("FriendshipDbStorage") FriendshipStorage friendStorage) {
         this.userStorage = userStorage;
         this.friendStorage = friendStorage;
     }

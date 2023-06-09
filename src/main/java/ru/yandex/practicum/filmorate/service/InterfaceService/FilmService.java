@@ -5,7 +5,7 @@ import ru.yandex.practicum.filmorate.model.Film;
 import java.util.Collection;
 import java.util.List;
 
-public interface ServiceFilm {
+public interface FilmService {
     Film create(Film film);
 
     Film update(Film film) throws Exception;

@@ -15,6 +15,9 @@ import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.Genre;
 import ru.yandex.practicum.filmorate.model.Mpa;
 import ru.yandex.practicum.filmorate.storage.interfaceStorage.FilmStorage;
+import ru.yandex.practicum.filmorate.storage.interfaceStorage.GenreStorage;
+import ru.yandex.practicum.filmorate.storage.interfaceStorage.LikeStorage;
+import ru.yandex.practicum.filmorate.storage.interfaceStorage.MpaStorage;
 
 import java.sql.*;
 import java.sql.Date;
@@ -26,15 +29,15 @@ import java.util.*;
 @Qualifier("FilmDbStorage")
 public class FilmDbStorage implements FilmStorage {
     private final JdbcTemplate jdbcTemplate;
-    private final GenreDbStorage genreStorage;
-    private final MpaDbStorage mpaStorage;
-    private final LikeDbStorage likeStorage;
+    private final GenreStorage genreStorage;
+    private final MpaStorage mpaStorage;
+    private final LikeStorage likeStorage;
 
     @Autowired
     public FilmDbStorage(JdbcTemplate jdbcTemplate,
-                         @Qualifier("GenreDbStorage") GenreDbStorage genreStorage,
-                         @Qualifier("MpaDbStorage") MpaDbStorage mpaStorage,
-                         @Qualifier("LikeDbStorage") LikeDbStorage likeStorage) {
+                         @Qualifier("GenreDbStorage") GenreStorage genreStorage,
+                         @Qualifier("MpaDbStorage") MpaStorage mpaStorage,
+                         @Qualifier("LikeDbStorage") LikeStorage likeStorage) {
         this.jdbcTemplate = jdbcTemplate;
         this.genreStorage = genreStorage;
         this.mpaStorage = mpaStorage;
@@ -49,7 +52,7 @@ public class FilmDbStorage implements FilmStorage {
             log.info("Получен список фильмов.");
             return films;
         } catch (EmptyResultDataAccessException o) {
-            log.error("Список фильмов пуст.");
+            log.error("При получении списка фильмов получили exception",o.getMessage());
             throw new ExceptionsUpdate("Список фильмов пуст.");
         }
     }
@@ -62,7 +65,7 @@ public class FilmDbStorage implements FilmStorage {
             log.info("Получен фильм с id: " + id);
             return film;
         } catch (DataRetrievalFailureException o) {
-            log.error("Фильма с id: " + id + " в таблице нет.");
+            log.error("При получении Фильма с id: " + id + "  получили exception",o.getMessage());
             throw new ExceptionsUpdate("Фильма с id: " + id + " в таблице нет.");
         }
     }
@@ -93,7 +96,7 @@ public class FilmDbStorage implements FilmStorage {
             }
             return takeById(film.getId());
         } catch (DuplicateKeyException o) {
-            log.error("Фильм уже существует");
+            log.error("При создании фильма получили exception",o.getMessage());
             throw new ExceptionsUpdate("Фильм уже существует");
         }
     }
@@ -129,7 +132,7 @@ public class FilmDbStorage implements FilmStorage {
             }
             return takeById(film.getId());
         } catch (EmptyResultDataAccessException o) {
-            log.error("При обновлении фильма произошла ошибка.");
+            log.error("При обновлении фильма  получили exception",o.getMessage());
             throw new ExceptionsUpdate("При обновлении фильма произошла ошибка.");
         }
     }

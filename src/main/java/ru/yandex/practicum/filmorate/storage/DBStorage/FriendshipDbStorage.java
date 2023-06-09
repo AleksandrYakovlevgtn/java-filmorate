@@ -35,7 +35,7 @@ public class FriendshipDbStorage implements FriendshipStorage {
     public void addFriend(int user1Id, int user2id) {
         try {
             if ((user1Id < 0 || user2id < 0) || user1Id == user2id) {
-                log.error("Ошибка при создании дружбы в id:" + user1Id + " " + user2id);
+                log.error("Exception при создании дружбы в id:" + user1Id + " " + user2id);
                 throw new ExceptionsUpdate("Ошибка при создании дружбы в id:" + user1Id + " " + user2id);
             } else {
                 String sql = "SELECT * FROM FRIENDSHIP WHERE (USER_ID = ? AND FRIEND_ID = ?);";
@@ -54,7 +54,7 @@ public class FriendshipDbStorage implements FriendshipStorage {
                 }
             }
         } catch (DataAccessException | SQLException o) {
-            log.error("При добавлении дружбы произошла ошибка.");
+            log.error("При добавлении дружбы  получили exception",o.getMessage());
             throw new ExceptionsUpdate("При добавлении дружбы произошла ошибка.");
         }
     }
@@ -70,7 +70,7 @@ public class FriendshipDbStorage implements FriendshipStorage {
                 log.info("Дружба между пользователем с id: " + user1Id + " и пользователем с id: " + user2id + " не подтверждена.");
             }
         } catch (DataAccessException o) {
-            log.error("Дружба между пользователем с id: " + user1Id + " и пользователем с id: " + user2id + " не подтверждена из за ошибки");
+            log.error("При подтверждении дружбы между пользователем с id: " + user1Id + " и пользователем с id: " + user2id + "  получили exception",o.getMessage());
             throw new ExceptionsUpdate("Дружба между пользователем с id: " + user1Id + " и пользователем с id: " + user2id + " не подтверждена из за ошибки");
         }
     }
@@ -86,7 +86,7 @@ public class FriendshipDbStorage implements FriendshipStorage {
                 log.info("Дружба между пользователем с id: " + user1Id + " и пользователем с id: " + user2id + " не удалена.");
             }
         } catch (DataAccessException o) {
-            log.error("Дружба между пользователем с id: " + user1Id + " и пользователем с id: " + user2id + " не удалена из за ошибки");
+            log.error("При удалении дружбы между пользователем с id: " + user1Id + " и пользователем с id: " + user2id + "  получили exception",o.getMessage());
             throw new ExceptionsUpdate("Дружба между пользователем с id: " + user1Id + " и пользователем с id: " + user2id + " не удалена из за ошибки");
         }
     }
@@ -99,6 +99,7 @@ public class FriendshipDbStorage implements FriendshipStorage {
             log.info("Получен список друзей пользователя");
             return new HashSet<>(set);
         } catch (EmptyResultDataAccessException o) {
+            log.info("Получен пустой список друзей пользователя");
             return new HashSet<>();
         }
     }

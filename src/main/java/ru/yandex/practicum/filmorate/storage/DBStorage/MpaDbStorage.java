@@ -33,6 +33,7 @@ public class MpaDbStorage implements MpaStorage {
             log.info("Получен список MPA");
             return mpas;
         } catch (EmptyResultDataAccessException o) {
+            log.error("При получении списка МРА получили exception",o.getMessage());
             throw new ExceptionsUpdate("MPA отсутствуют");
         }
     }
@@ -44,6 +45,7 @@ public class MpaDbStorage implements MpaStorage {
             log.info("получен MPA по id: " + id);
             return jdbcTemplate.queryForObject(sql, this::createMpa, id);
         } catch (EmptyResultDataAccessException o) {
+            log.error("При получении МРА по id: " + id + " получили exception",o.getMessage());
             throw new ExceptionsUpdate("MPA не найден с таким id: " + id);
         }
     }
