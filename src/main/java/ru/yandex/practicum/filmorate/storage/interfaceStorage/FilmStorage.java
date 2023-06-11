@@ -1,4 +1,4 @@
-package ru.yandex.practicum.filmorate.storage.InterfaceStorage;
+package ru.yandex.practicum.filmorate.storage.interfaceStorage;
 
 import ru.yandex.practicum.filmorate.model.Film;
 
@@ -13,8 +13,6 @@ public interface FilmStorage {
     Film update(Film film);
 
     Film takeById(Integer id);
-
-    boolean haveFilmByName(Film film);
 
     boolean haveFilm(Integer id);
 }

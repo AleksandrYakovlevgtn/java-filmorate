@@ -5,21 +5,22 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.model.Film;
-import ru.yandex.practicum.filmorate.service.FilmService;
-import ru.yandex.practicum.filmorate.service.UserService;
+import ru.yandex.practicum.filmorate.service.FilmServiceImpl;
+import ru.yandex.practicum.filmorate.service.UserServiceImpl;
 
 import javax.validation.Valid;
+import java.util.Collection;
 import java.util.List;
 
 @Slf4j
 @RequestMapping("/films")
 @RestController
 public class FilmController {
-    private final FilmService filmService;
-    private final UserService userService;
+    private final FilmServiceImpl filmService;
+    private final UserServiceImpl userService;
 
     @Autowired
-    public FilmController(FilmService filmService, UserService userService) {
+    public FilmController(FilmServiceImpl filmService, UserServiceImpl userService) {
         this.filmService = filmService;
         this.userService = userService;
     }
@@ -34,9 +35,8 @@ public class FilmController {
         return ResponseEntity.ok(filmService.update(film));
     }
 
-
     @GetMapping
-    public List<Film> takeFilms() {
+    public Collection<Film> takeFilms() {
         return filmService.takeAll();
     }
 
@@ -47,12 +47,12 @@ public class FilmController {
 
     @PutMapping("/{id}/like/{userId}")
     public void addLikeFilm(@PathVariable Integer id, @PathVariable Integer userId) {
-        filmService.addLike(id, userId);
+        filmService.addLike(userId, id);
     }
 
     @DeleteMapping("/{id}/like/{userId}")
     public void deleteLikeFilm(@PathVariable Integer id, @PathVariable Integer userId) {
-        filmService.deleteLike(id, userId);
+        filmService.deleteLike(userId, id);
     }
 
     @GetMapping("/popular")

@@ -2,14 +2,15 @@ package ru.yandex.practicum.filmorate.service.InterfaceService;
 
 import ru.yandex.practicum.filmorate.model.Film;
 
+import java.util.Collection;
 import java.util.List;
 
-public interface InterfaceServiceFilm {
+public interface FilmService {
     Film create(Film film);
 
     Film update(Film film) throws Exception;
 
-    List takeAll();
+    Collection takeAll();
 
     List takePopular(Integer count);
 
